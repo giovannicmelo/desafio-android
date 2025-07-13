@@ -26,11 +26,7 @@ class MainViewModel(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    init {
-        getUsers()
-    }
-
-    private fun getUsers() = getUsersUseCase.invoke()
+    fun getUsers() = getUsersUseCase.invoke()
         .flowOn(dispatcher)
         .onStart {
             _state.value = _state.value?.copy(isLoading = true)

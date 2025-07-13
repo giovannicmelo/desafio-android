@@ -1,6 +1,7 @@
 package com.picpay.desafio.android.data.datasource
 
 import com.picpay.desafio.android.data.api.PicPayService
+import com.picpay.desafio.android.data.extension.toDomain
 import com.picpay.desafio.android.domain.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -13,15 +14,6 @@ class UsersRemoteDataSourceImpl(private val api: PicPayService) : UsersDataSourc
 
         return flow { emit(api.getUsers()) }
             .catch { throwable -> throw Throwable(throwable.message) }
-            .map {
-                it.map {
-                    userResponse -> User(
-                        userResponse.img,
-                        userResponse.name,
-                        userResponse.id,
-                        userResponse.username
-                    )
-                }
-            }
+            .map { it.map { userResponse -> userResponse.toDomain() } }
     }
 }
