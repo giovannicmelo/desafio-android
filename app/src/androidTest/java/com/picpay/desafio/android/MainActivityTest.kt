@@ -11,7 +11,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.picpay.desafio.android.presentation.activity.MainActivity
 import org.junit.Test
 
-
 class MainActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
