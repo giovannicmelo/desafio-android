@@ -14,6 +14,6 @@ class UsersRemoteDataSourceImpl(private val api: PicPayService) : UsersDataSourc
 
         return flow { emit(api.getUsers()) }
             .catch { throwable -> throw Throwable(throwable.message) }
-            .map { it.map { userResponse -> userResponse.toDomain() } }
+            .map { it.toDomain() }
     }
 }
