@@ -36,4 +36,19 @@ object RecyclerViewMatchers {
             )
         )
     }
+
+    /**
+     * Matcher para verificar se um RecyclerView tem pelo menos um número mínimo de itens filhos (ViewHolders).
+     */
+    fun hasMinimumChildCount(minChildCount: Int): Matcher<View> {
+        return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+            override fun describeTo(description: Description) {
+                description.appendText("RecyclerView with at least $minChildCount children")
+            }
+
+            override fun matchesSafely(recyclerView: RecyclerView): Boolean {
+                return recyclerView.childCount >= minChildCount
+            }
+        }
+    }
 }

@@ -5,18 +5,14 @@ import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
+import com.picpay.desafio.android.presentation.activity.MainActivity
 import org.junit.Test
 
 
 class MainActivityTest {
-
-    private val server = MockWebServer()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -24,45 +20,30 @@ class MainActivityTest {
     fun shouldDisplayTitle() {
         launchActivity<MainActivity>().apply {
             val expectedTitle = context.getString(R.string.title)
-
             moveToState(Lifecycle.State.RESUMED)
-
             onView(withText(expectedTitle)).check(matches(isDisplayed()))
         }
     }
 
     @Test
     fun shouldDisplayListItem() {
-        server.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse {
-                return when (request.path) {
-                    "/users" -> successResponse
-                    else -> errorResponse
-                }
-            }
-        }
-
-        server.start(serverPort)
-
         launchActivity<MainActivity>().apply {
-            // TODO("validate if list displays items returned by server")
-        }
+            val expectedUsernameInFirstItem = "Tod86"
+            val positionToCheck = 0
 
-        server.close()
+            RecyclerViewMatchers.checkRecyclerViewItem(
+                R.id.recyclerView,
+                positionToCheck,
+                withText(expectedUsernameInFirstItem)
+            )
+        }
     }
 
-    companion object {
-        private const val serverPort = 8080
-
-        private val successResponse by lazy {
-            val body =
-                "[{\"id\":1001,\"name\":\"Eduardo Santos\",\"img\":\"https://randomuser.me/api/portraits/men/9.jpg\",\"username\":\"@eduardo.santos\"}]"
-
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(body)
+    @Test
+    fun shouldDisplayAtLeastOneItem() {
+        launchActivity<MainActivity>().apply {
+            onView(withId(R.id.recyclerView)).check(matches(isDisplayed()))
+            onView(withId(R.id.recyclerView)).check(matches(RecyclerViewMatchers.hasMinimumChildCount(1)))
         }
-
-        private val errorResponse by lazy { MockResponse().setResponseCode(404) }
     }
 }
