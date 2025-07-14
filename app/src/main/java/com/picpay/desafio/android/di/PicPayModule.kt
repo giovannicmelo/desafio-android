@@ -1,7 +1,7 @@
 package com.picpay.desafio.android.di
 
 import com.picpay.desafio.android.data.api.PicPayService
-import com.picpay.desafio.android.data.datasource.UsersLocalDataSource
+import com.picpay.desafio.android.data.datasource.UsersLocalDataSourceImpl
 import com.picpay.desafio.android.data.datasource.UsersRemoteDataSourceImpl
 import com.picpay.desafio.android.data.persistence.SharedPrefsKeyValuePersistence
 import com.picpay.desafio.android.data.repository.UsersRepositoryImpl
@@ -20,7 +20,7 @@ private val userModules: Module = module {
             remoteDataSource = UsersRemoteDataSourceImpl(
                 api = ServiceClient.create(PicPayService::class.java)
             ),
-            localDataSource = UsersLocalDataSource(
+            localDataSource = UsersLocalDataSourceImpl(
                 persistence = SharedPrefsKeyValuePersistence(
                     context = androidApplication()
                 )

@@ -7,7 +7,7 @@ import com.picpay.desafio.android.data.model.UserResponse
 import com.picpay.desafio.android.data.persistence.KeyValuePersistence
 import com.picpay.desafio.android.domain.model.User
 
-class UsersLocalDataSource(private val persistence: KeyValuePersistence): UsersDataSource.Local {
+class UsersLocalDataSourceImpl(private val persistence: KeyValuePersistence): UsersDataSource.Local {
 
     override fun getCachedUsers(): List<User> {
         val cache = persistence.getData()
