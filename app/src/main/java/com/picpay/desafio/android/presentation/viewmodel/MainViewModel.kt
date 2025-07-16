@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.picpay.desafio.android.domain.usecase.GetUsersUseCase
+import com.picpay.desafio.android.presentation.action.MainViewAction
 import com.picpay.desafio.android.presentation.state.MainViewState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +24,8 @@ class MainViewModel(
     private val _state = MutableLiveData(MainViewState())
     val state: LiveData<MainViewState> = _state
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _action = MutableLiveData<MainViewAction>()
+    val action: LiveData<MainViewAction> = _action
 
     fun getUsers() {
         getUsersUseCase().flowOn(dispatcher)
@@ -35,7 +36,7 @@ class MainViewModel(
                 _state.value = _state.value?.copy(isLoading = false)
             }
             .catch {
-                _error.value = it.message
+                _action.value = MainViewAction.ShowErrorMessage(it.message.toString())
             }
             .onEach {
                 _state.value = _state.value?.copy(users = it)

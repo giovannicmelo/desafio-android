@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.domain.usecase.GetUsersUseCase
+import com.picpay.desafio.android.presentation.action.MainViewAction
 import com.picpay.desafio.android.presentation.state.MainViewState
 import com.picpay.desafio.android.presentation.viewmodel.MainViewModel
 import io.mockk.every
@@ -32,14 +33,14 @@ class MainViewModelTest {
 
     private val getUsersUseCase: GetUsersUseCase = mockk()
     private val stateObserver: Observer<MainViewState> = mockk(relaxed = true)
-    private val errorObserver: Observer<String> = mockk(relaxed = true)
+    private val errorObserver: Observer<MainViewAction> = mockk(relaxed = true)
     private val viewModel = MainViewModel(getUsersUseCase, testDispatcher)
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         viewModel.state.observeForever(stateObserver)
-        viewModel.error.observeForever(errorObserver)
+        viewModel.action.observeForever(errorObserver)
     }
 
     @After
@@ -47,7 +48,7 @@ class MainViewModelTest {
         Dispatchers.resetMain()
         testDispatcher.cleanupTestCoroutines()
         viewModel.state.removeObserver(stateObserver)
-        viewModel.error.removeObserver(errorObserver)
+        viewModel.action.removeObserver(errorObserver)
     }
 
     @Test
@@ -75,7 +76,7 @@ class MainViewModelTest {
 
         // Then
         verify { stateObserver.onChanged(MainViewState(isLoading = true)) }
-        verify { errorObserver.onChanged(errorMessage) }
+        verify { errorObserver.onChanged(MainViewAction.ShowErrorMessage(errorMessage)) }
         verify { stateObserver.onChanged(MainViewState(isLoading = false)) }
     }
 }

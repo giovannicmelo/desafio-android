@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.presentation.action.MainViewAction
 import com.picpay.desafio.android.presentation.adapter.UserListAdapter
 import com.picpay.desafio.android.presentation.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -50,13 +51,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             adapter.users = state.users
         })
 
-        viewModel.error.observe(this, Observer { error ->
-            val message = getString(R.string.error)
+        viewModel.action.observe(this, Observer { error ->
+            when (error) {
+                is MainViewAction.ShowErrorMessage -> {
+                val message = getString(R.string.error)
 
-            Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT)
-                .show()
+                Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT)
+                    .show()
 
-            Log.e(this@MainActivity::class.java.simpleName, error)
+                Log.e(this@MainActivity::class.java.simpleName, message)
+                }
+            }
         })
     }
 }
